@@ -13,7 +13,7 @@ class Hotels(Base):
     rooms_quantity = Column(Integer, nullable=False)
     image_id = Column(Integer)
 
-    rooms = relationship('Rooms', back_populates='hotel')
+    # rooms = relationship('Rooms', back_populates='hotel')
 
-    def __str__(self) -> str:
-        return f'Отель {self.name} {self.location[:30]}'
+    # def __str__(self) -> str:
+    #     return f'Отель {self.name} {self.location[:30]}'

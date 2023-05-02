@@ -52,7 +52,7 @@ class BookingDAO(BaseDAO):
             """
             SELECT rooms.quiantity - COUNT(booked_rooms.rooms_id) FROM rooms
             LEFT JOIN booked_rooms ON booked_rooms.room_id = rooms.id
-            WHERE rooms.id = 1
+            WHERE rooms.id = rooms_id
             GROUP BY rooms.quantity, booked_rooms.room_id
             """
 
