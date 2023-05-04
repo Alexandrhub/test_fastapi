@@ -5,7 +5,8 @@ from pydantic import BaseModel
 
 from fastapi import FastAPI
 from sqladmin import Admin, ModelView
-from app.admin.views import BookingsAdmin, UsersAdmin
+from app.admin.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
+from app.admin.auth import authentication_backend
 
 from app.bookings.router import router as router_bookings
 from app.database import engine
@@ -51,10 +52,12 @@ def startup():
 
 
 
-admin = Admin(app, engine)
+admin = Admin(app, engine, authentication_backend=authentication_backend)
 
 admin.add_view(UsersAdmin)
 admin.add_view(BookingsAdmin)
+admin.add_view(RoomsAdmin)
+admin.add_view(HotelsAdmin)
 
 
 

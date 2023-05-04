@@ -15,8 +15,8 @@ class Rooms(Base):
     quantity = Column(String, nullable=False)
     image_id = Column(Integer)
 
-    # hotel = relationship('Hotels', back_populates='rooms')
-    # booking = relationship('Bookings', back_populates='room')
+    hotel = relationship('Hotels', back_populates='rooms')
+    booking = relationship('Bookings', back_populates='room')
 
-    # def __str__(self) -> str:
-    #     return f'Номер {self.name}'
+    def __str__(self) -> str:
+        return f'Номер {self.name}'
