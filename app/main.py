@@ -3,7 +3,14 @@ from typing import Optional
 from datetime import date
 from pydantic import BaseModel
 
+from fastapi import FastAPI
+from sqladmin import Admin, ModelView
+from app.admin.views import BookingsAdmin, UsersAdmin
+
 from app.bookings.router import router as router_bookings
+from app.database import engine
+from app.config import settings
+from app.users.models import Users
 from app.users.router import router_auth, router_users
 from app.hotels.router import router as router_hotels
 from app.images.router import router as router_images
@@ -35,8 +42,19 @@ app.mount("/static", StaticFiles(directory="app/static"), "static")
 
 @app.on_event("startup")
 def startup():
-    redis = aioredis.from_url("redis://localhost:6379", encoding="utf8", decode_responses=True)
+    redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
+                               encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="cache")
+
+
+
+
+
+
+admin = Admin(app, engine)
+
+admin.add_view(UsersAdmin)
+admin.add_view(BookingsAdmin)
 
 
 
