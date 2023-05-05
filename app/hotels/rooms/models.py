@@ -12,7 +12,7 @@ class Rooms(Base):
     description = Column(String, nullable=True)
     price = Column(Integer, nullable=False)
     services = Column(JSON, nullable=True)
-    quantity = Column(String, nullable=False)
+    quantity = Column(Integer, nullable=False)
     image_id = Column(Integer)
 
     hotel = relationship('Hotels', back_populates='rooms')
