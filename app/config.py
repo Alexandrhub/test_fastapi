@@ -5,6 +5,8 @@ from pydantic import BaseSettings, root_validator
 
 class Settings(BaseSettings):
     MODE: Literal["DEV", "TEST", "PROD"]
+    LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR"]
+    PYTHONPATH: str
 
     DB_HOST: str
     DB_PORT: int
@@ -44,7 +46,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
 
-    # SENTRY_DSN: str
+    SENTRY_DSN: str
 
     SECRET_KEY: str
     ALGORITHM: str
