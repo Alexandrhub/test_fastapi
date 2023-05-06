@@ -1,9 +1,11 @@
 from datetime import date
 
 from sqlalchemy import select
+
 from app.dao.base import BaseDAO
+from app.database import async_session_maker
 from app.hotels.models import Hotels
-from app.database import async_session_maker, engine
+
 
 class HotelsDAO(BaseDAO):
     model = Hotels
@@ -19,9 +21,6 @@ class HotelsDAO(BaseDAO):
             get_hotels = select(Hotels)
             result = await session.execute(get_hotels)
             return result.scalar()
-        
-
-
 
         # async with async_session_maker() as session:
         #     bookings_for_selected_dates = (
@@ -38,7 +37,7 @@ class HotelsDAO(BaseDAO):
         #         )
         #     ).subquery('filtered_bookings')
         # )
-        
+
         # hotels_room_left = select(
         #     (
         #     Hotels.rooms_quantity - func.count(bookings_for_selected_dates.c.room_id)
