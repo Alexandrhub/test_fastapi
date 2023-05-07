@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi_versioning import VersionedFastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from prometheus_fastapi_instrumentator import Instrumentator
 from redis import asyncio as aioredis
 from sqladmin import Admin
 
@@ -17,8 +18,8 @@ from app.database import engine
 from app.hotels.router import router as router_hotels
 from app.images.router import router as router_images
 from app.logger import logger
-from app.pages.router import router as router_pages
 from app.users.router import router_auth, router_users
+from app.prometheus.router import router as router_prometheus
 
 app = FastAPI(
     title="Бронирование отелей",
@@ -36,7 +37,17 @@ app.include_router(router_users)
 app.include_router(router_bookings)
 app.include_router(router_hotels)
 app.include_router(router_images)
-app.include_router(router_pages)
+app.include_router(router_prometheus)
+
+app = VersionedFastAPI(
+    app,
+    version_format="{major}",
+    prefix_format="/v{major}",
+    # description='Greet users with a nice message',
+    # middleware=[
+    #     Middleware(SessionMiddleware, secret_key='mysecretkey')
+    # ]
+)
 
 
 @app.on_event("startup")
@@ -49,16 +60,11 @@ def startup():
     FastAPICache.init(RedisBackend(redis), prefix="cache")
 
 
-app = VersionedFastAPI(
-    app,
-    version_format="{major}",
-    prefix_format="/v{major}",
-    # description='Greet users with a nice message',
-    # middleware=[
-    #     Middleware(SessionMiddleware, secret_key='mysecretkey')
-    # ]
+instrumentator = Instrumentator(
+    should_group_status_codes=False,
+    excluded_handlers=[".*admin.*", "/metrics"],
 )
-
+instrumentator.instrument(app).expose(app)
 
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 
