@@ -36,4 +36,4 @@ class AdminAuth(AuthenticationBackend):
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
 
 
-authentication_backend = AdminAuth(secret_key="")
+authentication_backend = AdminAuth(secret_key=" ")
