@@ -3,7 +3,7 @@ from starlette.status import HTTP_204_NO_CONTENT
 
 from app.exceptions import IncorrectEmailOrPasswordException, UserAlreadyExistsException
 from app.users.auth import authenticate_user, create_access_token, get_password_hash
-from app.users.dao import UsersDAO
+from app.users.dao import UsersDAO, UserAdminDAO
 from app.users.dependencies import get_current_user
 from app.users.models import Users
 from app.users.schemas import SUserAuth
@@ -23,6 +23,15 @@ async def register_user(user_data: SUserAuth):
         raise UserAlreadyExistsException
     hashed_password = get_password_hash(user_data.password)
     await UsersDAO.add(email=user_data.email, hashed_password=hashed_password)
+
+
+@router_auth.post("/register_admin", status_code=status.HTTP_201_CREATED)
+async def register_admin_user(user_data: SUserAuth):
+    existing_user = await UsersDAO.find_one_or_none(email=user_data.email)
+    if existing_user:
+        raise UserAlreadyExistsException
+    hashed_password = get_password_hash(user_data.password)
+    await UserAdminDAO.add(email=user_data.email, hashed_password=hashed_password)
 
 
 @router_auth.post("/login")

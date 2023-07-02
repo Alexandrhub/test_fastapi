@@ -15,3 +15,13 @@ class Users(Base):
 
     def __str__(self) -> str:
         return f"Пользователь {self.email}"
+
+
+class UserAdmin(Base):
+    __tablename__ = "user_admin"
+    id = Column(Integer, primary_key=True, nullable=False)
+    email = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=False)
+
+    def __str__(self) -> str:
+        return f"Администратор {self.email}"

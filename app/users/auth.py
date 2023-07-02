@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 from pydantic import EmailStr
 
 from app.config import settings
-from app.users.dao import UsersDAO
+from app.users.dao import UsersDAO, UserAdminDAO
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -33,6 +33,13 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 async def authenticate_user(email: EmailStr, password: str):
     # Проверяем наличие пользователя
     user = await UsersDAO.find_one_or_none(email=email)
+    # Вернуть None если пользователь не обнаружен или пароль не совпадает
+    if user and verify_password(password, user.hashed_password):
+        return user
+
+
+async def authenticate_admin(email: EmailStr, password: str):
+    user = await UserAdminDAO.find_one_or_none(email=email)
     # Вернуть None если пользователь не обнаружен или пароль не совпадает
     if user and verify_password(password, user.hashed_password):
         return user
