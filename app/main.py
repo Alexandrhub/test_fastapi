@@ -1,11 +1,9 @@
 import time
 
-import sentry_sdk
 from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
-from fastapi_versioning import VersionedFastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from fastapi_versioning import VersionedFastAPI
 from prometheus_fastapi_instrumentator import Instrumentator
 from redis import asyncio as aioredis
 from sqladmin import Admin
@@ -18,19 +16,13 @@ from app.database import engine
 from app.hotels.router import router as router_hotels
 from app.images.router import router as router_images
 from app.logger import logger
-from app.users.router import router_auth, router_users
 from app.prometheus.router import router as router_prometheus
+from app.users.router import router_auth, router_users
 
 app = FastAPI(
     title="Бронирование отелей",
     version="0.1.0",
 )
-
-
-# sentry_sdk.init(
-#     dsn=settings.SENTRY_DSN,
-#     traces_sample_rate=1.0,
-# )
 
 app.include_router(router_auth)
 app.include_router(router_users)
@@ -43,10 +35,6 @@ app = VersionedFastAPI(
     app,
     version_format="{major}",
     prefix_format="/v{major}",
-    # description='Greet users with a nice message',
-    # middleware=[
-    #     Middleware(SessionMiddleware, secret_key='mysecretkey')
-    # ]
 )
 
 
@@ -81,6 +69,3 @@ async def add_process_time_header(request: Request, call_next):
     process_time = time.time() - start_time
     logger.info("Request execution time", extra={"process_time": round(process_time, 4)})
     return response
-
-
-app.mount("/static", StaticFiles(directory="app/static"), "static")
