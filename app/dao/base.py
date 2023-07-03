@@ -1,4 +1,4 @@
-from sqlalchemy import insert, select, delete
+from sqlalchemy import delete, insert, select
 
 from app.database import async_session_maker
 
@@ -7,30 +7,30 @@ class BaseDAO:
     model = None
 
     @classmethod
-    async def find_all_filter(cls, *args, **kwargs):
+    async def select_all_filter(cls, *args):
         async with async_session_maker() as session:
-            query = select(cls.model).filter(*args, **kwargs)
+            query = select(cls.model).filter(*args)
             result = await session.execute(query)
             return result.scalars().all()
 
     @classmethod
-    async def find_all_filter_by(cls, *args, **kwargs):
+    async def select_all_filter_by(cls, **kwargs):
         async with async_session_maker() as session:
-            query = select(cls.model).filter_by(*args, **kwargs)
+            query = select(cls.model).filter_by(**kwargs)
+            result = await session.execute(query)
+            return result.scalars().all()
+
+    @classmethod
+    async def select_one_or_none_filter(cls, *args):
+        async with async_session_maker() as session:
+            query = select(cls.model).filter(*args)
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
     @classmethod
-    async def find_one_or_none_filter(cls, *args, **kwargs):
+    async def select_one_or_none_filter_by(cls, **kwargs):
         async with async_session_maker() as session:
-            query = select(cls.model).filter(*args, **kwargs)
-            result = await session.execute(query)
-            return result.scalar_one_or_none()
-
-    @classmethod
-    async def find_one_or_none_filter_by(cls, *args, **kwargs):
-        async with async_session_maker() as session:
-            query = select(cls.model).filter_by(*args, **kwargs)
+            query = select(cls.model).filter_by(**kwargs)
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
@@ -43,15 +43,15 @@ class BaseDAO:
             return result
 
     @classmethod
-    async def delete_rows_filter(cls, *args, **kwargs) -> None:
+    async def delete_rows_filer(cls, *args) -> None:
         async with async_session_maker() as session:
-            query = delete(cls.model).filter(*args, **kwargs)
+            query = delete(cls.model).filter(*args)
             await session.execute(query)
             await session.commit()
 
     @classmethod
-    async def delete_rows_filter_by(cls, *args, **kwargs) -> None:
+    async def delete_rows_filer_by(cls, **kwargs) -> None:
         async with async_session_maker() as session:
-            query = delete(cls.model).filter_by(*args, **kwargs)
+            query = delete(cls.model).filter_by(**kwargs)
             await session.execute(query)
             await session.commit()

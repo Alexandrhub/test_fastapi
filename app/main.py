@@ -14,13 +14,14 @@ from app.bookings.router import router as router_bookings
 from app.config import settings
 from app.database import engine
 from app.hotels.router import router as router_hotels
+from app.hotels.rooms.router import router as router_rooms
 from app.images.router import router as router_images
 from app.logger import logger
 from app.prometheus.router import router as router_prometheus
 from app.users.router import router_auth, router_users
 
 app = FastAPI(
-    title="Бронирование отелей",
+    title="Hotel Booking API",
     version="0.1.0",
 )
 
@@ -28,6 +29,7 @@ app.include_router(router_auth)
 app.include_router(router_users)
 app.include_router(router_bookings)
 app.include_router(router_hotels)
+app.include_router(router_rooms)
 app.include_router(router_images)
 app.include_router(router_prometheus)
 

@@ -24,22 +24,19 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(days=1)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 
 async def authenticate_user(email: EmailStr, password: str):
-    # Проверяем наличие пользователя
-    user = await UsersDAO.find_one_or_none(email=email)
-    # Вернуть None если пользователь не обнаружен или пароль не совпадает
+    user = await UsersDAO.select_one_or_none_filter_by(email=email)
     if user and verify_password(password, user.hashed_password):
         return user
 
 
 async def authenticate_admin(email: EmailStr, password: str):
-    user = await UserAdminDAO.find_one_or_none(email=email)
-    # Вернуть None если пользователь не обнаружен или пароль не совпадает
+    user = await UserAdminDAO.select_one_or_none_filter_by(email=email)
     if user and verify_password(password, user.hashed_password):
         return user
