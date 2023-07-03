@@ -30,22 +30,19 @@ class BookingDAO(BaseDAO):
         """
         # try:
         async with async_session_maker() as session:
-            booked_rooms = (
-                select(Bookings)
-                .where(
-                    and_(
-                        Bookings.user_id != user_id,
-                        or_(
-                            and_(
-                                Bookings.date_from >= date_from,
-                                Bookings.date_from <= date_to,
-                            ),
-                            and_(
-                                Bookings.date_from <= date_from,
-                                Bookings.date_to > date_from,
-                            ),
+            booked_rooms = select(Bookings).where(
+                and_(
+                    Bookings.user_id != user_id,
+                    or_(
+                        and_(
+                            Bookings.date_from >= date_from,
+                            Bookings.date_from <= date_to,
                         ),
-                    )
+                        and_(
+                            Bookings.date_from <= date_from,
+                            Bookings.date_to > date_from,
+                        ),
+                    ),
                 )
             )
 
