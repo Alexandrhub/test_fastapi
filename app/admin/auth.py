@@ -1,11 +1,10 @@
 from typing import Optional
 
-from sqladmin import Admin
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from app.users.auth import authenticate_user, create_access_token
+from app.users.auth import authenticate_admin, create_access_token
 from app.users.dependencies import get_current_user
 
 
@@ -14,7 +13,7 @@ class AdminAuth(AuthenticationBackend):
         form = await request.form()
         email, password = form["username"], form["password"]
 
-        user = await authenticate_user(email, password)
+        user = await authenticate_admin(email, password)
         if user:
             access_token = create_access_token({"sub": str(user.id)})
 
@@ -37,4 +36,4 @@ class AdminAuth(AuthenticationBackend):
             return RedirectResponse(request.url_for("admin:login"), status_code=302)
 
 
-authentication_backend = AdminAuth(secret_key="...")
+authentication_backend = AdminAuth(secret_key=" ")
