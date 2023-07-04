@@ -26,7 +26,7 @@ async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBooking
 @router.post("")
 @version(1)
 async def add_booking(
-    # background_tasks: BackgroundTasks,
+    background_tasks: BackgroundTasks,
     room_id: int,
     date_from: date,
     date_to: date,
@@ -34,7 +34,7 @@ async def add_booking(
 ):
     booking = await BookingDAO.add_booking_for_user(user.id, room_id, date_from, date_to)
     booking_dict = parse_obj_as(SBooking, booking).dict()
-    # background_tasks.add_task(send_booking_confirmation_email, booking_dict, user.email)
+    background_tasks.add_task(send_booking_confirmation_email, booking_dict, user.email)
     return booking_dict
 
 
@@ -43,6 +43,6 @@ async def add_booking(
 async def delete_booking(
     booking_id: int,
     user: Users = Depends(get_current_user),
-) -> Response:
+):
     await BookingDAO.delete_booking_for_user(booking_id=int(booking_id), user_id=user.id)
-    return Response(status_code=204)
+    return {"delete": "ok"}

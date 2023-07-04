@@ -1,7 +1,6 @@
 import time
 
 from fastapi import FastAPI, Request
-import uvicorn
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_versioning import VersionedFastAPI
@@ -73,6 +72,3 @@ async def add_process_time_header(request: Request, call_next):
     process_time = time.time() - start_time
     logger.info("Request execution time", extra={"process_time": round(process_time, 4)})
     return response
-
-
-

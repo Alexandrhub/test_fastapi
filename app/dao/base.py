@@ -9,16 +9,16 @@ class BaseDAO:
     @classmethod
     async def select_all_filter(cls, *args):
         async with async_session_maker() as session:
-            query = select(cls.model).filter(*args)
+            query = select(cls.model.__table__.columns).filter(*args)
             result = await session.execute(query)
-            return result.scalars().all()
+            return result.mappings().all()
 
     @classmethod
     async def select_all_filter_by(cls, **kwargs):
         async with async_session_maker() as session:
-            query = select(cls.model).filter_by(**kwargs)
+            query = select(cls.model.__table__.columns).filter_by(**kwargs)
             result = await session.execute(query)
-            return result.scalars().all()
+            return result.mappings().all()
 
     @classmethod
     async def select_one_or_none_filter(cls, *args):
