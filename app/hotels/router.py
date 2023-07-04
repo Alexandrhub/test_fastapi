@@ -21,7 +21,7 @@ async def get_hotels_by_location(
 @router.get("/all")
 async def get_all_hotels():
     """Get all hotels."""
-    hotels = await HotelsDAO.find_all_hotels()
+    hotels = await HotelsDAO.select_all_filter_by()
     return hotels
 
 

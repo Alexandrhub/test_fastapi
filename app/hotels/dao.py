@@ -49,10 +49,5 @@ class HotelsDAO(BaseDAO):
 
         return hotels
 
-    @classmethod
-    async def find_all_hotels(cls) -> [SHotelsInfo]:
-        hotels = await cls.select_all_filter_by()
-        return hotels
-
 
 
