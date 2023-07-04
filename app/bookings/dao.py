@@ -63,21 +63,22 @@ class BookingDAO(BaseDAO):
     @classmethod
     async def add_booking_for_user(
         cls, user_id: int, room_id: int, date_from: date, date_to: date
-    ) -> SBooking:
+    ):
         try:
             if date_from + timedelta(days=30) < date_to:
                 raise OutOfDateException
-            booked_rooms: int = len(await cls.get_booked_rooms(room_id, date_from, date_to))
+            booked_rooms: int = len(await cls.get_booking_rooms_by_id(room_id, date_from, date_to))
             async with async_session_maker() as session:
                 total_rooms: int = (
                     await session.execute(select(Rooms.quantity).filter_by(id=room_id))
                 ).scalar()
-                if not total_rooms - booked_rooms:
-                    raise RoomCannotBeBookedException
+                # if not total_rooms - booked_rooms:
+                #     raise RoomCannotBeBookedException
                 # Calculate the cost of a room per day
                 price: int = (
                     await session.execute(select(Rooms.price).filter_by(id=room_id))
                 ).scalar()
+
                 # Adding booking to the database
                 return (
                     await cls.add_rows(
