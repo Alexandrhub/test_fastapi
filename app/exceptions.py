@@ -27,7 +27,26 @@ IncorrectTokenException = HTTPException(
 
 UserIsNotPresentException = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-RoomCannotBeBooked = HTTPException(
+UserIsNotAdminException = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="Пользователь не является администратором",
+)
+
+RoomCannotBeBookedException = HTTPException(
     status_code=status.HTTP_409_CONFLICT,
     detail="Не осталось свободных номеров",
+)
+DateFromWrongFormatException = HTTPException(
+    status_code=status.HTTP_409_CONFLICT,
+    detail="Неверный формат даты, date_from >= date_to",
+)
+
+BookingDoesNotExistException = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Брони не существует",
+)
+
+OutOfDateException = HTTPException(
+    status_code=status.HTTP_409_CONFLICT,
+    detail="Неверные параметры даты",
 )
