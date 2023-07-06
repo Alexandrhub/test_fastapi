@@ -72,6 +72,7 @@ class BookingDAO(BaseDAO):
                 total_rooms: int = (
                     await session.execute(select(Rooms.quantity).filter_by(id=room_id))
                 ).scalar()
+                # Check if there is enough room in
                 # if not total_rooms - booked_rooms:
                 #     raise RoomCannotBeBookedException
                 # Calculate the cost of a room per day
