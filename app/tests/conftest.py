@@ -65,6 +65,12 @@ async def ac():
         yield ac
 
 
+@pytest.fixture(scope="function")
+async def session():
+    async with async_session_maker() as session:
+        yield session
+
+
 @pytest.fixture(scope="session")
 async def authenticated_ac():
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
@@ -77,9 +83,3 @@ async def authenticated_ac():
         )
         assert ac.cookies["booking_access_token"]
         yield ac
-
-
-@pytest.fixture(scope="function")
-async def session():
-    async with async_session_maker() as session:
-        yield session

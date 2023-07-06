@@ -29,3 +29,13 @@ async def test_add_and_get_booking(
     response = await authenticated_ac.get("/bookings")
 
     assert len(response.json()) == booked_rooms
+
+
+async def test_get_and_delete_bookings(authenticated_ac: AsyncClient):
+    response = await authenticated_ac.get("/bookings")
+    # Check that after we added  8 bookings we have 10 now
+    assert len(response.json()) == 10
+    # Check if delete works
+    for booking in response.json():
+        response = await authenticated_ac.delete(f"/bookings/{booking['id']}")
+        assert response.status_code == 204

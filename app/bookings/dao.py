@@ -61,9 +61,7 @@ class BookingDAO(BaseDAO):
             return result.all()
 
     @classmethod
-    async def add_booking_for_user(
-        cls, user_id: int, room_id: int, date_from: date, date_to: date
-    ):
+    async def add_booking_for_user(cls, user_id: int, room_id: int, date_from: date, date_to: date):
         try:
             if date_from + timedelta(days=30) < date_to:
                 raise OutOfDateException

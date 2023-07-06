@@ -16,9 +16,7 @@ class HotelsDAO(BaseDAO):
     model = Hotels
 
     @classmethod
-    async def find_hotels_by_location(
-        cls, location: str
-    ) -> [SHotelsInfo]:
+    async def find_hotels_by_location(cls, location: str) -> [SHotelsInfo]:
         result = []
         hotels = await cls.select_all_filter(
             func.lower(Hotels.location).like(f"%{location.lower()}%")
@@ -48,6 +46,3 @@ class HotelsDAO(BaseDAO):
         #         result.append(hotel)
 
         return hotels
-
-
-

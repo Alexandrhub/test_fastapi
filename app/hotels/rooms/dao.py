@@ -10,9 +10,7 @@ class RoomsDAO(BaseDAO):
     model = Rooms
 
     @classmethod
-    async def get_available_rooms_by_hotel_id(
-        cls, hotel_id: int, date_from: date, date_to: date
-    ):
+    async def get_available_rooms_by_hotel_id(cls, hotel_id: int, date_from: date, date_to: date):
         result: list = []
         # get all rooms by hotel id
         rooms: list[SRooms] = [

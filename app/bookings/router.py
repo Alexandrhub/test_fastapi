@@ -1,6 +1,6 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, Depends, BackgroundTasks, Response
 from fastapi_versioning import version
 from pydantic import parse_obj_as
 
@@ -48,9 +48,11 @@ async def add_booking(
 @router.delete("/{booking_id}")
 @version(1)
 async def delete_booking(
+    response: Response,
     booking_id: int,
     user: Users = Depends(get_current_user),
 ):
     """Deletes booking for user"""
     await BookingDAO.delete_booking_for_user(booking_id=int(booking_id), user_id=user.id)
+    response.status_code = 204
     return {"delete": "ok"}

@@ -10,9 +10,7 @@ router = APIRouter(prefix="/hotels", tags=["Hotels"])
 
 
 @router.get("/{location}")
-async def get_hotels_by_location(
-    location: str
-):
+async def get_hotels_by_location(location: str):
     """Get hotels by location"""
     hotels = await HotelsDAO.find_hotels_by_location(location)
     return hotels
