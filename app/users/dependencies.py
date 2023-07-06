@@ -11,7 +11,7 @@ from app.exceptions import (
     UserIsNotPresentException,
 )
 from app.users.dao import UsersDAO
-from app.users.models import Users
+from app.users.models import Users, UserAdmin
 
 
 def get_token(request: Request):
@@ -42,5 +42,5 @@ async def get_current_user(token: str = Depends(get_token)):
     return user
 
 
-async def get_current_admin_user(current_user: Users = Depends(get_current_user)):
+async def get_current_admin_user(current_user: UserAdmin = Depends(get_current_user)):
     return current_user

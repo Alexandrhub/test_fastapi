@@ -1,6 +1,6 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends, BackgroundTasks, Response
+from fastapi import APIRouter, Depends, BackgroundTasks
 from fastapi_versioning import version
 from pydantic import parse_obj_as
 
@@ -19,7 +19,7 @@ router = APIRouter(
 @router.get("")
 @version(1)
 async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBookingRoomInfo]:
-    """returns a list of all bookings for user"""
+    """Gets a list of all bookings for user"""
     return await BookingDAO.get_booking_for_user(user)
 
 
@@ -32,8 +32,12 @@ async def add_booking(
     date_to: date,
     user: Users = Depends(get_current_user),
 ):
+    """Booking rooms for user"""
     booking = await BookingDAO.add_booking_for_user(user.id, room_id, date_from, date_to)
     booking_dict = parse_obj_as(SBooking, booking).dict()
+    # Celery option if you include a decorator in a function
+    # send_booking_confirmation_email.delay(booking_dict, user.email)
+    # Option with built-in BackgroundTasks
     background_tasks.add_task(send_booking_confirmation_email, booking_dict, user.email)
     return booking_dict
 
@@ -44,5 +48,6 @@ async def delete_booking(
     booking_id: int,
     user: Users = Depends(get_current_user),
 ):
+    """Deletes booking for user"""
     await BookingDAO.delete_booking_for_user(booking_id=int(booking_id), user_id=user.id)
     return {"delete": "ok"}

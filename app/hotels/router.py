@@ -21,12 +21,12 @@ async def get_hotels_by_location(
 @router.get("/all")
 async def get_all_hotels():
     """Get all hotels."""
-    hotels = await HotelsDAO.select_all_filter_by()
+    hotels = await HotelsDAO.select_all()
     return hotels
 
 
 @router.get("/{hotel_id}")
-async def get_hotel_by_id(hotel_id: int):
+async def get_hotel_by_id(hotel_id: int) -> SHotelsInfo:
     """Get hotel by id."""
     hotel = await HotelsDAO.select_one_or_none_filter_by(id=hotel_id)
     return hotel
