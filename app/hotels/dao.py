@@ -1,73 +1,53 @@
 from datetime import date
 
-from sqlalchemy import select, func, literal
+from sqlalchemy import func, select
+from sqlalchemy.orm import sessionmaker
+from app.database import engine, async_session_maker
 
-from app.bookings.models import Bookings
+from app.bookings.dao import BookingDAO
 from app.dao.base import BaseDAO
-from app.database import async_session_maker
 from app.hotels.models import Hotels
+from app.hotels.rooms.dao import RoomsDAO
 from app.hotels.rooms.models import Rooms
+from app.hotels.schemas import SHotelsInfo
 
 
 class HotelsDAO(BaseDAO):
     model = Hotels
 
     @classmethod
-    async def search_hotels_by_name(cls, name: str):
-        async with async_session_maker() as session:
-            get_hotels = select(Hotels).where(Hotels.name.ilike(f"%{name}%"))
-            result = await session.execute(get_hotels)
-            return result.scalars().all()
+    async def find_hotels_by_location(
+        cls, location: str
+    ) -> [SHotelsInfo]:
+        result = []
+        hotels = await cls.select_all_filter(
+            func.lower(Hotels.location).like(f"%{location.lower()}%")
+        )
 
-    @classmethod
-    async def search_for_hotels(cls, location: str):
-        async with async_session_maker() as session:
-            get_hotels = select(Hotels).where(Hotels.location.ilike(f"%{location}%"))
-            result = await session.execute(get_hotels)
-            return result.scalars().all()
+        # # Create Session
+        # Session = sessionmaker(bind=engine)
+        # session = Session()
+        #
+        #
+        # # search for available rooms for each hotel
+        # for hotel in hotels:
+        #     total_rooms = hotel.rooms.quantity
+        #     session.expire_all()
+        #     rooms = [
+        #         room.id for room in await RoomsDAO.select_all_filter(Rooms.hotel_id == hotel.id)
+        #     ]
+        #
+        #     # get all booked rooms for each hotel for date range
+        #     count_booked_rooms = 0
+        #     for room_id in rooms:
+        #         count_booked_rooms += len(
+        #             await BookingDAO.get_booking_rooms_by_id(room_id, date_from, date_to)
+        #         )
+        #     if total_rooms > count_booked_rooms:
+        #         hotel.rooms_left = total_rooms - count_booked_rooms
+        #         result.append(hotel)
 
+        return hotels
 
-    @classmethod
-    async def find_hotels_in_rooms_all(cls, hotel_id: int, date_from: date, date_to: date):
-        async with async_session_maker() as session:
-            query = select(Hotels).filter_by(hotel_id=hotel_id)
-            all_rooms_execute = await session.execute(query)
-            all_rooms = all_rooms_execute.mappings().all()
-
-            results = []
-            for room in all_rooms:
-                room_id = room["id"]
-
-                booked_room = (
-                    select(Bookings)
-                    .where(
-                        (Bookings.room_id == room_id)
-                        & (Bookings.date_to >= date_to)
-                        & (Bookings.date_from <= date_from)
-                    )
-                    .cte("booked_room")
-                )
-
-                get_room_available = (
-                    (
-                        select(Rooms.quantity - func.count(booked_room.c.room_id)).label(
-                            "room_available"
-                        ),
-                        ((literal(date_to) - literal(date_from)) * Bookings.price).label(
-                            "total_price"
-                        ),
-                    )
-                    .select_from(Hotels)
-                    .join(booked_room, booked_room.c.room_id == Hotels.id, isouter=True)
-                    .where(Hotels.id == room_id)
-                    .group_by(Rooms.quantity, booked_room.c.room_id, Rooms.price)
-                )
-
-                room_available_execute = await session.execute(get_room_available)
-                room_available = room_available_execute.mappings().one()
-                res = {**room, **room_available}
-                results.append(res)
-
-            return results
 
 

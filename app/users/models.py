@@ -14,7 +14,7 @@ class Users(Base):
     booking = relationship("Bookings", back_populates="user")
 
     def __str__(self) -> str:
-        return f"Пользователь {self.email}"
+        return f"User {self.email}"
 
 
 class UserAdmin(Base):
@@ -24,4 +24,4 @@ class UserAdmin(Base):
     hashed_password = Column(String, nullable=False)
 
     def __str__(self) -> str:
-        return f"Администратор {self.email}"
+        return f"Admin {self.email}"

@@ -13,6 +13,6 @@ async def test_add_and_get_booking():
     assert new_booking.user_id == 2
     assert new_booking.room_id == 2
 
-    new_booking = await BookingDAO.find_by_id(new_booking.id)
+    new_booking = await BookingDAO.find_all_filter_by(new_booking.id)
 
     assert new_booking is not None
