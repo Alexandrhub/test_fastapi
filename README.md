@@ -50,6 +50,11 @@ celery --app=app.tasks.celery:celery flower
 Затем в Dashboards -> import -> Вставляем содержимое grafana-dashboard.json и выбираем какой-нибудь случайный uuid(и имя для дашборда)
 5. Если не интересуют метрики / логирование можно отключить закоментировав строчки с sentry и instumentator в файле app/main.py и docker-compose
 
+### Документация
+
+- [x] Swagger UI <localhost:8000/docs>
+- [x] ReDoc <localhost:8000/redoc>
+- [x] Api routes <localhost:8000/api/v1/docs>
 
 ## Обратная связь
 Любые комментарии, исправления, замечания пишите мне в [телеграм](https://t.me/alex_cherr).
