@@ -7,14 +7,15 @@ from fastapi_versioning import VersionedFastAPI
 from prometheus_fastapi_instrumentator import Instrumentator
 from redis import asyncio as aioredis
 from sqladmin import Admin
+import sentry_sdk
 
 from app.admin.auth import authentication_backend
 from app.admin.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
 from app.bookings.router import router as router_bookings
 from app.config import settings
 from app.database import engine
-from app.hotels.router import router as router_hotels
 from app.hotels.rooms.router import router as router_rooms
+from app.hotels.router import router as router_hotels
 from app.images.router import router as router_images
 from app.logger import logger
 from app.prometheus.router import router as router_prometheus
@@ -33,21 +34,29 @@ app.include_router(router_rooms)
 app.include_router(router_images)
 app.include_router(router_prometheus)
 
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production,
+    traces_sample_rate=1.0,
+)
+
 app = VersionedFastAPI(
     app,
     version_format="{major}",
-    prefix_format="/v{major}",
+    prefix_format="/api/v{major}",
 )
 
 
-# @app.on_event("startup")
-# def startup():
-#     redis = aioredis.from_url(
-#         f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
-#         encoding="utf8",
-#         decode_responses=True,
-#     )
-#     FastAPICache.init(RedisBackend(redis), prefix="cache")
+@app.on_event("startup")
+def startup():
+    redis = aioredis.from_url(
+        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
+        encoding="utf8",
+        decode_responses=True,
+    )
+    FastAPICache.init(RedisBackend(redis), prefix="cache")
 
 
 instrumentator = Instrumentator(

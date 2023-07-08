@@ -1,10 +1,7 @@
-from datetime import date
-
 from fastapi import APIRouter
-from fastapi_cache.decorator import cache
 
 from app.hotels.dao import HotelsDAO
-from app.hotels.schemas import SHotelsInfo, SHotelsRoomsLeft
+from app.hotels.schemas import SHotelsInfo
 
 router = APIRouter(prefix="/hotels", tags=["Hotels"])
 

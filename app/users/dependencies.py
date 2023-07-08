@@ -11,7 +11,7 @@ from app.exceptions import (
     UserIsNotPresentException,
 )
 from app.users.dao import UsersDAO
-from app.users.models import Users, UserAdmin
+from app.users.models import UserAdmin
 
 
 def get_token(request: Request):
@@ -27,11 +27,11 @@ async def get_current_user(token: str = Depends(get_token)):
     except JWTError:
         raise IncorrectTokenException
     # Check token expiration
-    expire: str = payload.get("exp")
+    expire = payload.get("exp")
     if not expire or (int(expire) < datetime.utcnow().timestamp()):
         raise TokenExpiredException
     # Check if the token and user match
-    user_id: str = payload.get("sub")
+    user_id = payload.get("sub")
     if not user_id:
         raise UserIsNotPresentException
     # Check if user is present in database

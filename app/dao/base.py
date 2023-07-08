@@ -14,11 +14,11 @@ class BaseDAO:
             return result.scalars().all()
 
     @classmethod
-    async def select_all(cls, **kwargs):
+    async def select_all(cls):
         async with async_session_maker() as session:
-            query = select(cls.model.__table__.columns).filter_by(**kwargs)
+            query = select(cls.model)
             result = await session.execute(query)
-            return result.mappings().all()
+            return result.scalars().all()
 
     @classmethod
     async def select_all_filter_by(cls, **kwargs):
@@ -50,14 +50,14 @@ class BaseDAO:
             return result
 
     @classmethod
-    async def delete_rows_filer(cls, *args) -> None:
+    async def delete_rows_filer(cls, *args):
         async with async_session_maker() as session:
             query = delete(cls.model).filter(*args)
             await session.execute(query)
             await session.commit()
 
     @classmethod
-    async def delete_rows_filer_by(cls, **kwargs) -> None:
+    async def delete_rows_filer_by(cls, **kwargs):
         async with async_session_maker() as session:
             query = delete(cls.model).filter_by(**kwargs)
             await session.execute(query)

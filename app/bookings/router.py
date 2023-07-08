@@ -41,7 +41,7 @@ async def add_booking(
     # Celery option if you include a decorator in a function
     # send_booking_confirmation_email.delay(booking_dict, user.email)
     # Option with built-in BackgroundTasks
-    # background_tasks.add_task(send_booking_confirmation_email, booking_dict, user.email)
+    background_tasks.add_task(send_booking_confirmation_email, booking_dict, user.email)
     return booking_dict
 
 
