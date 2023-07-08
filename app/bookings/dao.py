@@ -4,19 +4,17 @@ from sqlalchemy import and_, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.bookings.models import Bookings
-from app.bookings.schemas import SBooking, SBookingRoomInfo
+from app.bookings.schemas import SBookingRoomInfo
 from app.dao.base import BaseDAO
 from app.database import async_session_maker
-from app.hotels.rooms.models import Rooms
 from app.exceptions import (
     BookingDoesNotExistException,
     DateFromWrongFormatException,
     OutOfDateException,
-    RoomCannotBeBookedException,
 )
 from app.hotels.rooms.models import Rooms
-from app.users.models import Users
 from app.logger import logger
+from app.users.models import Users
 
 
 class BookingDAO(BaseDAO):
@@ -61,17 +59,17 @@ class BookingDAO(BaseDAO):
             return result.all()
 
     @classmethod
-    async def add_booking_for_user(
-        cls, user_id: int, room_id: int, date_from: date, date_to: date
-    ):
+    async def add_booking_for_user(cls, user_id: int, room_id: int, date_from: date, date_to: date):
         try:
             if date_from + timedelta(days=30) < date_to:
                 raise OutOfDateException
-            booked_rooms: int = len(await cls.get_booking_rooms_by_id(room_id, date_from, date_to))
+            # booked_rooms: int = len(
+            # await cls.get_booking_rooms_by_id(room_id, date_from, date_to))
             async with async_session_maker() as session:
-                total_rooms: int = (
-                    await session.execute(select(Rooms.quantity).filter_by(id=room_id))
-                ).scalar()
+                # total_rooms: int = (
+                #     await session.execute(select(Rooms.quantity).filter_by(id=room_id))
+                # ).scalar()
+                # Check if there is enough room in
                 # if not total_rooms - booked_rooms:
                 #     raise RoomCannotBeBookedException
                 # Calculate the cost of a room per day
@@ -91,11 +89,12 @@ class BookingDAO(BaseDAO):
                 ).scalar()
         # Error logging
         except (SQLAlchemyError, Exception) as err:
+            msg = "Exception"
             if isinstance(err, SQLAlchemyError):
-                msg: str = "DB"
+                msg += " DB: Cannot add booking"
             elif isinstance(err, Exception):
-                msg: str = "Unknown"
-            msg += "Exception: Cannot add booking"
+                msg += " Unknown: Cannot add booking"
+
             extra = {
                 "user_id": user_id,
                 "room_id": room_id,

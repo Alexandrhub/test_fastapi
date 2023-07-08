@@ -29,7 +29,7 @@
     {
         "hotel_id": 2,
         "name": "Номер на 3-х человек",
-        "description": null,
+        "description": "Красота неописуемая.",
         "price": 4350,
         "services": [],
         "quantity": 8,
@@ -38,7 +38,7 @@
     {
         "hotel_id": 3,
         "name": "Номер полулюкс семейный с 1 двуспальной кроватью",
-        "description": null,
+        "description": "Красота неописуемая.",
         "price": 7080,
         "services": ["Холодильник"],
         "quantity": 20,
@@ -47,7 +47,7 @@
     {
         "hotel_id": 3,
         "name": "2-комнатный номер люкс комфорт",
-        "description": null,
+        "description": "Красота неописуемая.",
         "price": 9815,
         "services": [],
         "quantity": 10,
@@ -56,7 +56,7 @@
     {
         "hotel_id": 4,
         "name": "Стандарт двухместный",
-        "description": null,
+        "description": "Красота неописуемая.",
         "price": 4300,
         "services": ["Бесплатный Wi‑Fi", "Холодильник"],
         "quantity": 20,
@@ -65,7 +65,7 @@
     {
         "hotel_id": 4,
         "name": "Стандарт улучшенный ПЛЮС",
-        "description": null,
+        "description": "Красота неописуемая.",
         "price": 4700,
         "services": [
             "Бесплатный Wi‑Fi",
@@ -79,7 +79,7 @@
     {
         "hotel_id": 5,
         "name": "Номер стандарт с 2 односпальными кроватями (с завтраком)",
-        "description": null,
+        "description": "Красота неописуемая.",
         "price": 5000,
         "services": [],
         "quantity": 15,
@@ -88,7 +88,7 @@
     {
         "hotel_id": 5,
         "name": "Номер полулюкс премиум (с завтраком)",
-        "description": null,
+        "description": "Красота неописуемая.",
         "price": 8000,
         "services": [],
         "quantity": 7,
@@ -97,7 +97,7 @@
     {
         "hotel_id": 6,
         "name": "Стандарт (типовой корпус)",
-        "description": null,
+        "description": "Красота неописуемая.",
         "price": 8125,
         "services": [],
         "quantity": 45,

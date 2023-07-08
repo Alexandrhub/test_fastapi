@@ -1,14 +1,7 @@
-from datetime import date
+from sqlalchemy import func
 
-from sqlalchemy import func, select
-from sqlalchemy.orm import sessionmaker
-from app.database import engine, async_session_maker
-
-from app.bookings.dao import BookingDAO
 from app.dao.base import BaseDAO
 from app.hotels.models import Hotels
-from app.hotels.rooms.dao import RoomsDAO
-from app.hotels.rooms.models import Rooms
 from app.hotels.schemas import SHotelsInfo
 
 
@@ -16,10 +9,7 @@ class HotelsDAO(BaseDAO):
     model = Hotels
 
     @classmethod
-    async def find_hotels_by_location(
-        cls, location: str
-    ) -> [SHotelsInfo]:
-        result = []
+    async def find_hotels_by_location(cls, location: str) -> list[SHotelsInfo]:
         hotels = await cls.select_all_filter(
             func.lower(Hotels.location).like(f"%{location.lower()}%")
         )
@@ -48,6 +38,3 @@ class HotelsDAO(BaseDAO):
         #         result.append(hotel)
 
         return hotels
-
-
-
